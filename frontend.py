@@ -19,7 +19,8 @@ if st.button("Analyze Tax"):
     }
 
     response = requests.post(
-        "http://127.0.0.1:8000/compare-regimes",
+    "https://ai-tax-advisor-1c0b.onrender.com/compare-regimes",
+
         json=payload
     )
 
