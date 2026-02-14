@@ -29,10 +29,19 @@ def health_check():
 def compare_tax(request: TaxRequest):
     try:
         result = TaxService.compare_regimes(
-            gross_income=request.gross_income,
-            tax_year=request.tax_year,
-            deductions=request.deductions
-        )
+    basic_salary=request.basic_salary,
+    hra_received=request.hra_received,
+    special_allowance=request.special_allowance,
+    other_income=request.other_income,
+    annual_rent_paid=request.annual_rent_paid,
+    metro_city=request.metro_city,
+    section_80c=request.section_80c,
+    section_80d=request.section_80d,
+    home_loan_interest=request.home_loan_interest,
+    nps_80ccd1b=request.nps_80ccd1b,
+    tax_year=request.tax_year
+)
+        
 
         return JSONResponse(
             status_code=200,
