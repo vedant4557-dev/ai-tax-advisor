@@ -57,6 +57,9 @@ class TaxCalculator:
     "cess": round(cess, 2),
     "final_tax": round(base_tax + surcharge + cess, 2)
 }
+sec_80c = min(sec_80c, 150000)
+nps_extra = min(nps_extra, 50000)
+home_loan_interest = min(home_loan_interest, 200000)
 
 
 
