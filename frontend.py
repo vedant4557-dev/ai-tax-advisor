@@ -3,6 +3,7 @@ import requests
 
 BACKEND_URL = "https://ai-tax-advisor-1c0b.onrender.com/compare-regimes"
 
+
 st.set_page_config(page_title="AI Tax Advisor", layout="centered")
 
 st.title("💰 AI Tax Advisor")
@@ -60,14 +61,43 @@ if st.button("Analyze Tax"):
 
     try:
         response = requests.post(BACKEND_URL, json=payload)
-        result = response.json()["data"]
 
-        st.success(f"Recommended Regime: {result['recommended_regime'].upper()}")
+        # Check HTTP status
+        if response.status_code != 200:
+            st.error(f"Backend error: {response.status_code}")
+            st.stop()
+
+        response_json = response.json()
+
+        # Check backend status field
+        if response_json.get("status") != "success":
+            st.error("Backend returned error response.")
+            st.stop()
+
+        result = response_json["data"]
+
+        # ===============================
+        # ✅ Display Results
+        # ===============================
+
+        st.success(
+            f"Recommended Regime: {result['recommended_regime'].upper()}"
+        )
 
         st.markdown("### 📊 Tax Comparison")
-        st.write(f"Old Regime Tax: ₹{result['old_regime']['final_tax']:,.0f}")
-        st.write(f"New Regime Tax: ₹{result['new_regime']['final_tax']:,.0f}")
-        st.write(f"Tax Savings: ₹{result['tax_savings']:,.0f}")
+
+        st.write(
+            f"Old Regime Tax: ₹{result['old_regime']['final_tax']:,.0f}"
+        )
+        st.write(
+            f"New Regime Tax: ₹{result['new_regime']['final_tax']:,.0f}"
+        )
+        st.write(
+            f"Tax Savings: ₹{result['tax_savings']:,.0f}"
+        )
+        st.write(
+            f"Effective Tax Rate: {result['effective_tax_rate_percent']}%"
+        )
 
         st.markdown("### 🤖 AI Advisory Insight")
         st.write(result["ai_explanation"])
