@@ -1,31 +1,24 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
-
 from models.request import TaxRequest
 from services.tax_service import TaxService
 
 app = FastAPI(
     title="Indian Tax AI Engine",
-    version="2.0.0",
-    description="AI-powered Indian Income Tax Comparison Engine (FY 2025-26)"
+    version="1.0.0",
+    description="AI-powered Indian Income Tax Comparison Engine"
 )
 
-# -------------------------
 # Health Check
-# -------------------------
-
 @app.get("/")
 def health_check():
     return {
         "status": "success",
         "message": "Indian Tax AI Engine Running",
-        "version": "2.0.0"
+        "version": "1.0.0"
     }
 
-# -------------------------
-# Compare Regimes
-# -------------------------
-
+# Compare Tax Regimes
 @app.post("/compare-regimes")
 def compare_tax(request: TaxRequest):
     try:
@@ -44,7 +37,14 @@ def compare_tax(request: TaxRequest):
         )
 
     except ValueError as ve:
-        raise HTTPException(status_code=400, detail=str(ve))
+        raise HTTPException(
+            status_code=400,
+            detail=str(ve)
+        )
 
     except Exception:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(
+            status_code=500,
+            detail="Internal Server Error"
+        )
+
