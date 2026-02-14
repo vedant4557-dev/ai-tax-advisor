@@ -1,19 +1,18 @@
 # domain/surcharge.py
 
-def calculate_surcharge(taxable_income: float, base_tax: float) -> float:
+def calculate_surcharge(base_tax: float, gross_income: float) -> float:
     """
-    Calculates surcharge based on income thresholds.
+    Simplified surcharge logic.
+    (You can enhance later)
     """
 
-    if taxable_income > 50000000:       # > 5 Cr
-        rate = 0.37
-    elif taxable_income > 20000000:     # > 2 Cr
-        rate = 0.25
-    elif taxable_income > 10000000:     # > 1 Cr
-        rate = 0.15
-    elif taxable_income > 5000000:      # > 50 L
-        rate = 0.10
+    if gross_income > 50000000:      # 5 Cr
+        return round(base_tax * 0.37, 2)
+    elif gross_income > 20000000:    # 2 Cr
+        return round(base_tax * 0.25, 2)
+    elif gross_income > 10000000:    # 1 Cr
+        return round(base_tax * 0.15, 2)
+    elif gross_income > 5000000:     # 50 Lakh
+        return round(base_tax * 0.10, 2)
     else:
-        rate = 0.0
-
-    return base_tax * rate
+        return 0.0

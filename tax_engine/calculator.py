@@ -62,5 +62,7 @@ sec_80c = min(sec_80c, 150000)
 nps_extra = min(nps_extra, 50000)
 home_loan_interest = min(home_loan_interest, 200000)
 
+if tax_year == "2025-26":
+    slabs = NEW_REGIME_SLABS["2025-26"]
 
 
