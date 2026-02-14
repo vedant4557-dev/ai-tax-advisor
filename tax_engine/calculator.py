@@ -4,8 +4,9 @@ from domain.surcharge import Surcharge
 
 class TaxCalculator:
 
-    STANDARD_DEDUCTION = 50000
-    CESS_RATE = 0.04
+    standard_deduction = 75000
+    taxable_income = max(0, gross_income - standard_deduction)
+
 
     @classmethod
     def compute_tax(

@@ -29,7 +29,8 @@ sec_80d = st.number_input("Section 80D (Health Insurance)", min_value=0.0)
 home_loan_interest = st.number_input("Home Loan Interest (Max ₹2L)", min_value=0.0)
 nps_extra = st.number_input("NPS 80CCD(1B) (Max ₹50,000)", min_value=0.0)
 
-tax_year = st.selectbox("Select Tax Year", ["2024-25"])
+tax_year = st.selectbox("Select Tax Year", ["2025-26"])
+
 
 # ---------------------------
 # Compute Total Income
