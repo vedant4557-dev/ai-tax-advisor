@@ -7,51 +7,45 @@ from domain.surcharge import calculate_surcharge
 
 class TaxService:
 
-    # ---------------------------------------------------
-    # Core slab calculator
-    # ---------------------------------------------------
     @staticmethod
     def _calculate_tax_from_slabs(income: float, slabs):
         tax = 0.0
         previous_limit = 0.0
 
         for limit, rate in slabs:
-            if income <= previous_limit:
+            if income > limit:
+                taxable_amount = limit - previous_limit
+            else:
+                taxable_amount = income - previous_limit
+
+            if taxable_amount <= 0:
                 break
 
-            taxable_amount = min(income, limit) - previous_limit
-
-            if taxable_amount > 0:
-                tax += taxable_amount * rate
-
+            tax += taxable_amount * rate
             previous_limit = limit
 
         return round(tax, 2)
 
-    # ---------------------------------------------------
-    # Apply 4% Health & Education Cess
-    # ---------------------------------------------------
     @staticmethod
     def _apply_cess(amount: float):
+        # 4% Health & Education Cess
         return round(amount * 0.04, 2)
 
-    # ---------------------------------------------------
-    # Compute single regime
-    # ---------------------------------------------------
     @classmethod
     def _compute_regime(
         cls,
         regime: str,
         gross_income: float,
         tax_year: str,
-        deductions: float,
+        deductions: float
     ):
+
         if regime == "old":
             slabs = get_old_regime_slabs(tax_year)
             taxable_income = max(gross_income - deductions, 0)
         else:
             slabs = get_new_regime_slabs(tax_year)
-            taxable_income = gross_income  # no deductions in new regime
+            taxable_income = gross_income  # No deductions in new regime
 
         base_tax = cls._calculate_tax_from_slabs(taxable_income, slabs)
 
@@ -68,35 +62,31 @@ class TaxService:
             "base_tax": base_tax,
             "surcharge": surcharge,
             "cess": cess,
-            "final_tax": final_tax,
+            "final_tax": final_tax
         }
 
-    # ---------------------------------------------------
-    # Compare old vs new regime
-    # ---------------------------------------------------
     @classmethod
     def compare_regimes(
         cls,
         gross_income: float,
         tax_year: str,
-        deductions: float,
+        deductions: float
     ):
 
         old_result = cls._compute_regime(
             regime="old",
             gross_income=gross_income,
             tax_year=tax_year,
-            deductions=deductions,
+            deductions=deductions
         )
 
         new_result = cls._compute_regime(
             regime="new",
             gross_income=gross_income,
             tax_year=tax_year,
-            deductions=deductions,
+            deductions=deductions
         )
 
-        # Decide recommendation
         if old_result["final_tax"] < new_result["final_tax"]:
             recommended = "old"
             savings = new_result["final_tax"] - old_result["final_tax"]
@@ -107,15 +97,10 @@ class TaxService:
             recommended = "same"
             savings = 0.0
 
-        # Safe effective tax rate
-        if gross_income > 0:
-            effective_rate = round(
-                (min(old_result["final_tax"], new_result["final_tax"]) / gross_income)
-                * 100,
-                2,
-            )
-        else:
-            effective_rate = 0.0
+        effective_rate = round(
+            (min(old_result["final_tax"], new_result["final_tax"]) / gross_income) * 100,
+            2
+        ) if gross_income > 0 else 0.0
 
         return {
             "tax_year": tax_year,
@@ -124,5 +109,6 @@ class TaxService:
             "new_regime": new_result,
             "recommended_regime": recommended,
             "tax_savings": round(savings, 2),
-            "effective_tax_rate_percent": effective_rate,
+            "effective_tax_rate_percent": effective_rate
         }
+
